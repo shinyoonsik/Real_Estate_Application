@@ -1,2 +1,2 @@
 # Real_Estate_Application
-for showing my project
+- 아키텍처
