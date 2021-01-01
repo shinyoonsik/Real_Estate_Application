@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>HappyHouse</title>
+    <!-- Latest compiled and minified CSS -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css"
+    />
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+      .map_wrap2 {
+        overflow: hidden;
+        height: 330px;
+      }
+      .map_wrap,
+      .map_wrap * {
+        margin: 0;
+        padding: 0;
+        font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;
+        font-size: 12px;
+      }
+      .map_wrap {
+        position: relative;
+        left: 502px;
+        top: 2px;
+        width: 1110px;
+        height: 800px;
+      }
+      #category {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        border-radius: 5px;
+        border: 1px solid #909090;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+        background: #fff;
+        overflow: hidden;
+        z-index: 2;
+      }
+      #category li {
+        float: left;
+        list-style: none;
+        width: 50px;
+        border-right: 1px solid #acacac;
+        padding: 6px 0;
+        text-align: center;
+        cursor: pointer;
+      }
+      #category li.on {
+        background: #eee;
+      }
+      #category li:hover {
+        background: #ffe6e6;
+        border-left: 1px solid #acacac;
+        margin-left: -1px;
+      }
+      #category li:last-child {
+        margin-right: 0;
+        border-right: 0;
+      }
+      #category li span {
+        display: block;
+        margin: 0 auto 3px;
+        width: 27px;
+        height: 28px;
+      }
+      #category li .category_bg {
+        background: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_category.png)
+          no-repeat;
+      }
+      #category li .bank {
+        background-position: -10px 0;
+      }
+      #category li .mart {
+        background-position: -10px -36px;
+      }
+      #category li .pharmacy {
+        background-position: -10px -72px;
+      }
+      #category li .oil {
+        background-position: -10px -108px;
+      }
+      #category li .cafe {
+        background-position: -10px -144px;
+      }
+      #category li .store {
+        background-position: -10px -180px;
+      }
+      #category li.on .category_bg {
+        background-position-x: -46px;
+      }
+      .placeinfo_wrap {
+        position: absolute;
+        bottom: 28px;
+        left: -150px;
+        width: 300px;
+      }
+      .placeinfo {
+        position: relative;
+        width: 100%;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        border-bottom: 2px solid #ddd;
+        padding-bottom: 10px;
+        background: #fff;
+      }
+      .placeinfo:nth-of-type(n) {
+        border: 0;
+        box-shadow: 0px 1px 2px #888;
+      }
+      .placeinfo_wrap .after {
+        content: '';
+        position: relative;
+        margin-left: -12px;
+        left: 50%;
+        width: 22px;
+        height: 12px;
+        background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png');
+      }
+      .placeinfo a,
+      .placeinfo a:hover,
+      .placeinfo a:active {
+        color: #fff;
+        text-decoration: none;
+      }
+      .placeinfo a,
+      .placeinfo span {
+        display: block;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+      .placeinfo span {
+        margin: 5px 5px 0 5px;
+        cursor: default;
+        font-size: 13px;
+      }
+      .placeinfo .title {
+        font-weight: bold;
+        font-size: 14px;
+        border-radius: 6px 6px 0 0;
+        margin: -1px -1px 0 -1px;
+        padding: 10px;
+        color: #fff;
+        background: #d95050;
+        background: #d95050
+          url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/arrow_white.png)
+          no-repeat right 14px center;
+      }
+      .placeinfo .tel {
+        color: #0f7833;
+      }
+      .placeinfo .jibun {
+        color: #999;
+        font-size: 11px;
+        margin-top: 0;
+      }
+      .f-color {
+        color: black;
+        font-size: 19px;
+      }
+      .ns {
+        width: 100%;
+        height: 80px;
+      }
+      .fleft {
+        position: relative;
+        top: 3px;
+        left: 1380px;
+        color: white;
+      }
+      .ac {
+        color: white;
+      }
+      .fc {
+        font-size: 18px;
+        text-align: center;
+      }
+
+      .dot {
+        overflow: hidden;
+        float: left;
+        width: 12px;
+        height: 12px;
+        background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/mini_circle.png');
+      }
+      .dotOverlay {
+        position: relative;
+        bottom: 10px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        border-bottom: 2px solid #ddd;
+        float: left;
+        font-size: 12px;
+        padding: 5px;
+        background: #fff;
+      }
+      .dotOverlay:nth-of-type(n) {
+        border: 0;
+        box-shadow: 0px 1px 2px #888;
+      }
+      .number {
+        font-weight: bold;
+        color: #ee6152;
+      }
+      .dotOverlay:after {
+        content: '';
+        position: absolute;
+        margin-left: -6px;
+        left: 50%;
+        bottom: -8px;
+        width: 11px;
+        height: 8px;
+        background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white_small.png');
+      }
+      .distanceInfo {
+        position: relative;
+        top: 5px;
+        left: 5px;
+        list-style: none;
+        margin: 0;
+      }
+      .distanceInfo .label {
+        display: inline-block;
+        width: 50px;
+      }
+      .distanceInfo:after {
+        content: none;
+      }
+      .cs {
+        width: 170px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-sm bg-warning ns">
+      <a href="/">
+        <img
+          src="/title_logo.png"
+          class="d-inline-block align-middle"
+          width="60px"
+          alt="Kitten"/></a
+      >&nbsp;&nbsp;&nbsp;
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link f-color" href="/search">방 찾기</a>
+        </li>
+        &nbsp;&nbsp;&nbsp;
+        <li class="nav-item">
+          <a class="nav-link f-color" href="/news">부동산 뉴스</a>
+        </li>
+        &nbsp;&nbsp;&nbsp;
+        <li class="nav-item">
+          <a class="nav-link f-color" href="/kakao.html">쉽게 방 찾기</a>
+        </li>
+        &nbsp;&nbsp;&nbsp;
+        <li class="nav-item">
+          <a class="nav-link f-color" href="/board">게시판</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav fleft">
+        <li class="nav-item">
+          <a href="/me" style="color: white;">내정보보기</a>
+        </li>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <li class="nav-item">
+          <div class="ac" onclick="deleteSession()">로그아웃</div>
+        </li>
+      </ul>
+    </nav>
+    <br />
+
+    <!-- ****************************************************************************************** -->
+    <div class="container">
+      <table class="table table-bordered">
+        <tr>
+          <td class="fc bg-warning" style="width: 200px;">아파트 선택</td>
+          <td class="cs">
+            <select id="sido" style="width: 144px;">
+              <option value="0">시도</option>
+            </select>
+          </td>
+          <td class="cs">
+            <select id="gugun" style="width: 144px;">
+              <option value="0">구군</option>
+            </select>
+          </td>
+          <td class="cs">
+            <select id="dong" style="width: 144px;">
+              <option value="0">읍면동</option>
+            </select>
+          </td>
+          <td class="cs">
+            <select id="apt" style="width: 144px;">
+              <option value="0">아파트별 검색</option>
+            </select>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- map화면 ************************************************************************************-->
+    <div class="map_wrap">
+      <div
+        id="map"
+        style="width:100%;height:100%;position:relative;overflow:hidden;"
+      ></div>
+      <ul id="category">
+        <li id="BK9" data-order="0">
+          <span class="category_bg bank"></span>
+          은행
+        </li>
+        <li id="MT1" data-order="1">
+          <span class="category_bg mart"></span>
+          마트
+        </li>
+        <li id="PM9" data-order="2">
+          <span class="category_bg pharmacy"></span>
+          약국
+        </li>
+        <li id="OL7" data-order="3">
+          <span class="category_bg oil"></span>
+          주유소
+        </li>
+        <li id="CE7" data-order="4">
+          <span class="category_bg cafe"></span>
+          카페
+        </li>
+        <li id="CS2" data-order="5">
+          <span class="category_bg store"></span>
+          편의점
+        </li>
+      </ul>
+    </div>
+    <br />
+    <div class="container" style="text-align: center;">
+      <button
+        id="loadBtn"
+        style="width: 550px; height: 40px;"
+        class="btn btn-warning"
+        onclick="showLoad()"
+      >
+        거리뷰 보기
+      </button>
+      <button
+        id="loadBtn"
+        style="width: 550px; height: 40px;"
+        class="btn btn-outline-warning"
+        onclick="hideLoad()"
+      >
+        거리뷰 숨기기
+      </button>
+      <br />
+      <br />
+    </div>
+    <!-- 로드뷰 ****************************************************************************************************** -->
+    <div class="map_wrap2" id="load" style="display: none; height: 600px;">
+      <div id="mapWrapper2" style="width:50%;height:300px;float:left">
+        <div id="map2" style="width:100%;height:100%"></div>
+      </div>
+      <div class="container" id="rvWrapper" style="width:100%;height:400px;">
+        <div id="roadview" style="width:100%;height:100%"></div>
+      </div>
+    </div>
+
+    <footer class="page-footer font-small blue-grey lighten-5 mt-4">
+      <div>
+        <div class="container">
+          <!-- Grid row-->
+          <div class="row py-4 d-flex align-items-center">
+            <!-- Grid column -->
+            <div
+              class="col-md-6 col-lg-5 text-center text-md-left mb-4 mb-md-0"
+            >
+              <h6 class="mb-0">SNS를 통해서도 만나보세요</h6>
+            </div>
+            <!-- Grid column -->
+
+            <!-- Grid column -->
+            <div class="col-md-6 col-lg-7 text-center text-md-right">
+              <!-- Facebook -->
+              <a class="fb-ic">
+                <i class="fab fa-facebook white-text mr-4" style="color:blue">
+                </i>
+              </a>
+              <!-- Twitter -->
+              <a class="tw-ic">
+                <i class="fab fa-twitter white-text mr-4" style="color:skyblue">
+                </i>
+              </a>
+              <!-- Google +-->
+              <a class="gplus-ic">
+                <i
+                  class="fab fa-google-plus white-text mr-4"
+                  style="color:green"
+                >
+                </i>
+              </a>
+              <!--Linkedin -->
+              <a class="li-ic">
+                <i
+                  class="fab fa-linkedin-in white-text mr-4"
+                  style="color:#008299"
+                >
+                </i>
+              </a>
+              <!--Instagram-->
+              <a class="ins-ic">
+                <i class="fab fa-instagram white-text" style="color:#FF007F">
+                </i>
+              </a>
+            </div>
+            <!-- Grid column -->
+          </div>
+          <!-- Grid row-->
+        </div>
+      </div>
+
+      <!-- Footer Links -->
+      <div class="container text-center text-md-left mt-5">
+        <!-- Grid row -->
+        <div class="row mt-3 dark-grey-text">
+          <!-- Grid column -->
+          <div class="col-md-3 col-lg-4 col-xl-3 mb-4">
+            <!-- Content -->
+            <h6 class="text-uppercase font-weight-bold">Happy House</h6>
+            <hr
+              class="teal accent-3 mb-4 mt-0 d-inline-block mx-auto"
+              style="width: 60px;"
+            />
+            <p>
+              윤식이가 두드린다 낙낙의 첫번째 프로젝트.
+            </p>
+          </div>
+          <!-- Grid column -->
+
+          <!-- Grid column -->
+          <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
+            <!-- Links -->
+            <h6 class="text-uppercase font-weight-bold">Developers</h6>
+            <hr
+              class="teal accent-3 mb-4 mt-0 d-inline-block mx-auto"
+              style="width: 60px;"
+            />
+            <p>
+              <a class="dark-grey-text" href="#!">김낙영</a>
+            </p>
+            <p>
+              <a class="dark-grey-text" href="#!">신윤식</a>
+            </p>
+          </div>
+          <!-- Grid column -->
+
+          <!-- Grid column -->
+          <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
+            <!-- Links -->
+            <h6 class="text-uppercase font-weight-bold">Products</h6>
+            <hr
+              class="teal accent-3 mb-4 mt-0 d-inline-block mx-auto"
+              style="width: 60px;"
+            />
+            <p>
+              <a class="dark-grey-text" href="#!">이용약관</a>
+            </p>
+            <p>
+              <a class="dark-grey-text" href="#!">개인정보처리방침</a>
+            </p>
+            <p>
+              <a class="dark-grey-text" href="#!">도움말</a>
+            </p>
+          </div>
+          <!-- Grid column -->
+
+          <!-- Grid column -->
+          <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+            <!-- Links -->
+            <h6 class="text-uppercase font-weight-bold">Contact</h6>
+            <hr
+              class="teal accent-3 mb-4 mt-0 d-inline-block mx-auto"
+              style="width: 60px;"
+            />
+            <p><i class="fas fa-home mr-3"></i> 서울 강남구 테헤란로 212</p>
+            <p><i class="fas fa-envelope mr-3"></i> ssafy@example.com</p>
+            <p><i class="fas fa-phone mr-3"></i> + 010 1234 5678</p>
+          </div>
+          <!-- Grid column -->
+        </div>
+        <!-- Grid row -->
+      </div>
+      <!-- Footer Links -->
+
+      <!-- Copyright -->
+      <div class="footer-copyright text-center text-black-50 py-3">
+        © 2020 Copyright:
+        <a class="dark-grey-text"> 윤식이가 두드린다 낙낙 </a>
+      </div>
+      <!-- Copyright -->
+    </footer>
+
+    <script
+      type="text/javascript"
+      src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ed26b88e9d2b10a3408cb38c891e1ab0&libraries=services"
+    ></script>
+
+    <script>
+      const CONTEXTROOT = `http://localhost:8000/happyhouse/map`;
+
+      function hideLoad() {
+        $('#load').hide();
+      }
+
+      function showLoad() {
+        console.log('보인다');
+        $('#load').show();
+        $('#mapWrapper2').hide();
+      }
+
+      $(document).ready(function() {
+        $.get(
+          `${CONTEXTROOT}`,
+          function(data, status) {
+            $.each(data, function(index, vo) {
+              console.log(data);
+              $('#sido').append(
+                "<option value='" +
+                  vo.sidoCode +
+                  "'>" +
+                  vo.sidoName +
+                  '</option>'
+              );
+            }); //each
+          }, //function
+          'json'
+        ); //get
+      }); //ready
+
+      $('#sido').change(function() {
+        let sido = 'gugun/' + $('#sido').val();
+        let url = `${CONTEXTROOT}/${sido}`;
+        console.log(url + ' -------------------for gugun ');
+        $.get(
+          url,
+          function(data, status) {
+            $('#gugun').empty();
+            $('#gugun').append('<option value="0">선택</option>');
+            $.each(data, function(index, vo) {
+              $('#gugun').append(
+                "<option value='" +
+                  vo.gugunCode +
+                  "'>" +
+                  vo.gugunName +
+                  '</option>'
+              );
+            }); //each
+          }, //function
+          'json'
+        ); //get
+      }); //change
+
+      $('#gugun').change(function() {
+        let gugun = 'dong/' + $('#gugun').val();
+        let url = `${CONTEXTROOT}/${gugun}`;
+        console.log(url + ' -------------------for dong ');
+        $.get(
+          url,
+          function(data, status) {
+            $('#map').show();
+            $('#dong').empty();
+            $('#dong').append('<option value="0">선택</option>');
+            console.log(data);
+            $.each(data, function(index, vo) {
+              $('#dong').append(
+                "<option value='" + vo.dong + "'>" + vo.dong + '</option>'
+              );
+            }); //each
+          }, //function
+          'json'
+        ); //get
+      }); //change
+
+      $('#dong').change(function() {
+        //deleteMarkers();
+        let dong = 'apt/' + $('#dong').val();
+        let url = `${CONTEXTROOT}/${dong}`;
+        console.log(url + ' -------------------for apt ');
+        $.get(
+          url,
+          function(data, status) {
+            aptInfo = [];
+            $('#apt').empty();
+            $('#apt').append('<option value="0">아파트별 검색</option>');
+            $.each(data, function(index, vo) {
+              //console.log(aptInfo[index] + '/////');
+              $('#apt').append(
+                "<option value='" + vo.aptName + "'>" + vo.aptName + '</option>'
+              );
+              console.log(vo.aptName + ' ' + vo.lat + ' ' + vo.dong);
+              aptInfo.push(vo);
+            }); //each
+            //geocode(data);
+          }, //function
+          'json'
+        ); //get
+
+        // 동별 모든 아파트 정보 가져오기
+        let ndong = 'priceApt/' + $('#dong').val();
+        console.log(ndong);
+        let nurl = `${CONTEXTROOT}/${ndong}`;
+        console.log(nurl + '********************');
+        aptDeal = [];
+        $.get(
+          nurl,
+          function(data, status) {
+            $.each(data, function(index, vo) {
+              //console.log(aptInfo[index] + '/////');
+              console.log('가격정보 ' + vo.toString());
+              aptDeal.push(vo);
+            }); //each
+            //geocode(data);
+          }, //function
+          'json'
+        ); //get
+      }); //change
+
+      $('#apt').change(function() {
+        var tmpApt = $('#apt').val();
+        findAptLoc(tmpApt);
+      }); // change
+
+      // 세션스토리지 날리기
+      function deleteSession() {
+        sessionStorage.clear();
+        location.href = '/';
+      }
+
+      // 마커를 클릭했을 때 해당 장소의 상세정보를 보여줄 커스텀오버레이입니다  <-- 카카오 지도 api
+      var placeOverlay = new kakao.maps.CustomOverlay({ zIndex: 1 }),
+        contentNode = document.createElement('div'), // 커스텀 오버레이의 컨텐츠 엘리먼트 입니다
+        markers = [], // 마커를 담을 배열입니다
+        currCategory = ''; // 현재 선택된 카테고리를 가지고 있을 변수입니다
+
+      var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+        mapOption = {
+          center: new kakao.maps.LatLng(37.566826, 126.9786567), // 지도의 중심좌표
+          level: 5, // 지도의 확대 레벨
+        };
+
+      // 지도를 생성합니다
+      var map = new kakao.maps.Map(mapContainer, mapOption);
+
+      // 장소 검색 객체를 생성합니다
+      var ps = new kakao.maps.services.Places(map);
+
+      // 지도에 idle 이벤트를 등록합니다
+      kakao.maps.event.addListener(map, 'idle', searchPlaces);
+
+      // 커스텀 오버레이의 컨텐츠 노드에 css class를 추가합니다
+      contentNode.className = 'placeinfo_wrap';
+
+      // 아파트 위치
+      var aptInfo = [];
+
+      // 로드뷰에 기준점으로 보여줄 위치 변수
+      var aptX = 0;
+      var aptY = 0;
+
+      // 매매가별 아파트정보
+      var aptDeal = [];
+
+      // apt마커
+      var marker2 = new kakao.maps.Marker(null);
+
+      // 선 그리기
+      var drawingFlag = false; // 선이 그려지고 있는 상태를 가지고 있을 변수입니다
+      var moveLine; // 선이 그려지고 있을때 마우스 움직임에 따라 그려질 선 객체 입니다
+      var clickLine; // 마우스로 클릭한 좌표로 그려질 선 객체입니다
+      var distanceOverlay; // 선의 거리정보를 표시할 커스텀오버레이 입니다
+      var dots = {}; // 선이 그려지고 있을때 클릭할 때마다 클릭 지점과 거리를 표시하는 커스텀 오버레이 배열입니다.
+
+      // 지도에 클릭 이벤트를 등록합니다
+      // 지도를 클릭하면 선 그리기가 시작됩니다 그려진 선이 있으면 지우고 다시 그립니다
+      kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+        // 마우스로 클릭한 위치입니다
+        var clickPosition = mouseEvent.latLng;
+
+        // 지도 클릭이벤트가 발생했는데 선을 그리고있는 상태가 아니면
+        if (!drawingFlag) {
+          // 상태를 true로, 선이 그리고있는 상태로 변경합니다
+          drawingFlag = true;
+
+          // 지도 위에 선이 표시되고 있다면 지도에서 제거합니다
+          deleteClickLine();
+
+          // 지도 위에 커스텀오버레이가 표시되고 있다면 지도에서 제거합니다
+          deleteDistnce();
+
+          // 지도 위에 선을 그리기 위해 클릭한 지점과 해당 지점의 거리정보가 표시되고 있다면 지도에서 제거합니다
+          deleteCircleDot();
+
+          // 클릭한 위치를 기준으로 선을 생성하고 지도위에 표시합니다
+          clickLine = new kakao.maps.Polyline({
+            map: map, // 선을 표시할 지도입니다
+            path: [clickPosition], // 선을 구성하는 좌표 배열입니다 클릭한 위치를 넣어줍니다
+            strokeWeight: 3, // 선의 두께입니다
+            strokeColor: '#db4040', // 선의 색깔입니다
+            strokeOpacity: 1, // 선의 불투명도입니다 0에서 1 사이값이며 0에 가까울수록 투명합니다
+            strokeStyle: 'solid', // 선의 스타일입니다
+          });
+
+          // 선이 그려지고 있을 때 마우스 움직임에 따라 선이 그려질 위치를 표시할 선을 생성합니다
+          moveLine = new kakao.maps.Polyline({
+            strokeWeight: 3, // 선의 두께입니다
+            strokeColor: '#db4040', // 선의 색깔입니다
+            strokeOpacity: 0.5, // 선의 불투명도입니다 0에서 1 사이값이며 0에 가까울수록 투명합니다
+            strokeStyle: 'solid', // 선의 스타일입니다
+          });
+
+          // 클릭한 지점에 대한 정보를 지도에 표시합니다
+          displayCircleDot(clickPosition, 0);
+        } else {
+          // 선이 그려지고 있는 상태이면
+
+          // 그려지고 있는 선의 좌표 배열을 얻어옵니다
+          var path = clickLine.getPath();
+
+          // 좌표 배열에 클릭한 위치를 추가합니다
+          path.push(clickPosition);
+
+          // 다시 선에 좌표 배열을 설정하여 클릭 위치까지 선을 그리도록 설정합니다
+          clickLine.setPath(path);
+
+          var distance = Math.round(clickLine.getLength());
+          displayCircleDot(clickPosition, distance);
+        }
+      });
+
+      // 지도에 마우스무브 이벤트를 등록합니다
+      // 선을 그리고있는 상태에서 마우스무브 이벤트가 발생하면 그려질 선의 위치를 동적으로 보여주도록 합니다
+      kakao.maps.event.addListener(map, 'mousemove', function(mouseEvent) {
+        // 지도 마우스무브 이벤트가 발생했는데 선을 그리고있는 상태이면
+        if (drawingFlag) {
+          // 마우스 커서의 현재 위치를 얻어옵니다
+          var mousePosition = mouseEvent.latLng;
+
+          // 마우스 클릭으로 그려진 선의 좌표 배열을 얻어옵니다
+          var path = clickLine.getPath();
+
+          // 마우스 클릭으로 그려진 마지막 좌표와 마우스 커서 위치의 좌표로 선을 표시합니다
+          var movepath = [path[path.length - 1], mousePosition];
+          moveLine.setPath(movepath);
+          moveLine.setMap(map);
+
+          var distance = Math.round(
+              clickLine.getLength() + moveLine.getLength()
+            ), // 선의 총 거리를 계산합니다
+            content =
+              '<div class="dotOverlay distanceInfo">총거리 <span class="number">' +
+              distance +
+              '</span>m</div>'; // 커스텀오버레이에 추가될 내용입니다
+
+          // 거리정보를 지도에 표시합니다
+          showDistance(content, mousePosition);
+        }
+      });
+
+      // 지도에 마우스 오른쪽 클릭 이벤트를 등록합니다
+      // 선을 그리고있는 상태에서 마우스 오른쪽 클릭 이벤트가 발생하면 선 그리기를 종료합니다
+      kakao.maps.event.addListener(map, 'rightclick', function(mouseEvent) {
+        // 지도 오른쪽 클릭 이벤트가 발생했는데 선을 그리고있는 상태이면
+        if (drawingFlag) {
+          // 마우스무브로 그려진 선은 지도에서 제거합니다
+          moveLine.setMap(null);
+          moveLine = null;
+
+          // 마우스 클릭으로 그린 선의 좌표 배열을 얻어옵니다
+          var path = clickLine.getPath();
+
+          // 선을 구성하는 좌표의 개수가 2개 이상이면
+          if (path.length > 1) {
+            // 마지막 클릭 지점에 대한 거리 정보 커스텀 오버레이를 지웁니다
+            if (dots[dots.length - 1].distance) {
+              dots[dots.length - 1].distance.setMap(null);
+              dots[dots.length - 1].distance = null;
+            }
+
+            var distance = Math.round(clickLine.getLength()), // 선의 총 거리를 계산합니다
+              content = getTimeHTML(distance); // 커스텀오버레이에 추가될 내용입니다
+
+            // 그려진 선의 거리정보를 지도에 표시합니다
+            showDistance(content, path[path.length - 1]);
+          } else {
+            // 선을 구성하는 좌표의 개수가 1개 이하이면
+            // 지도에 표시되고 있는 선과 정보들을 지도에서 제거합니다.
+            deleteClickLine();
+            deleteCircleDot();
+            deleteDistnce();
+          }
+
+          // 상태를 false로, 그리지 않고 있는 상태로 변경합니다
+          drawingFlag = false;
+        }
+      });
+
+      // 클릭으로 그려진 선을 지도에서 제거하는 함수입니다
+      function deleteClickLine() {
+        if (clickLine) {
+          clickLine.setMap(null);
+          clickLine = null;
+        }
+      }
+
+      // 마우스 드래그로 그려지고 있는 선의 총거리 정보를 표시하거
+      // 마우스 오른쪽 클릭으로 선 그리가 종료됐을 때 선의 정보를 표시하는 커스텀 오버레이를 생성하고 지도에 표시하는 함수입니다
+      function showDistance(content, position) {
+        if (distanceOverlay) {
+          // 커스텀오버레이가 생성된 상태이면
+
+          // 커스텀 오버레이의 위치와 표시할 내용을 설정합니다
+          distanceOverlay.setPosition(position);
+          distanceOverlay.setContent(content);
+        } else {
+          // 커스텀 오버레이가 생성되지 않은 상태이면
+
+          // 커스텀 오버레이를 생성하고 지도에 표시합니다
+          distanceOverlay = new kakao.maps.CustomOverlay({
+            map: map, // 커스텀오버레이를 표시할 지도입니다
+            content: content, // 커스텀오버레이에 표시할 내용입니다
+            position: position, // 커스텀오버레이를 표시할 위치입니다.
+            xAnchor: 0,
+            yAnchor: 0,
+            zIndex: 3,
+          });
+        }
+      }
+
+      // 그려지고 있는 선의 총거리 정보와
+      // 선 그리가 종료됐을 때 선의 정보를 표시하는 커스텀 오버레이를 삭제하는 함수입니다
+      function deleteDistnce() {
+        if (distanceOverlay) {
+          distanceOverlay.setMap(null);
+          distanceOverlay = null;
+        }
+      }
+
+      // 선이 그려지고 있는 상태일 때 지도를 클릭하면 호출하여
+      // 클릭 지점에 대한 정보 (동그라미와 클릭 지점까지의 총거리)를 표출하는 함수입니다
+      function displayCircleDot(position, distance) {
+        // 클릭 지점을 표시할 빨간 동그라미 커스텀오버레이를 생성합니다
+        var circleOverlay = new kakao.maps.CustomOverlay({
+          content: '<span class="dot"></span>',
+          position: position,
+          zIndex: 1,
+        });
+
+        // 지도에 표시합니다
+        circleOverlay.setMap(map);
+
+        if (distance > 0) {
+          // 클릭한 지점까지의 그려진 선의 총 거리를 표시할 커스텀 오버레이를 생성합니다
+          var distanceOverlay = new kakao.maps.CustomOverlay({
+            content:
+              '<div class="dotOverlay">거리 <span class="number">' +
+              distance +
+              '</span>m</div>',
+            position: position,
+            yAnchor: 1,
+            zIndex: 2,
+          });
+
+          // 지도에 표시합니다
+          distanceOverlay.setMap(map);
+        }
+
+        // 배열에 추가합니다
+        dots.push({ circle: circleOverlay, distance: distanceOverlay });
+      }
+
+      // 클릭 지점에 대한 정보 (동그라미와 클릭 지점까지의 총거리)를 지도에서 모두 제거하는 함수입니다
+      function deleteCircleDot() {
+        var i;
+
+        for (i = 0; i < dots.length; i++) {
+          if (dots[i].circle) {
+            dots[i].circle.setMap(null);
+          }
+
+          if (dots[i].distance) {
+            dots[i].distance.setMap(null);
+          }
+        }
+
+        dots = [];
+      }
+
+      // 마우스 우클릭 하여 선 그리기가 종료됐을 때 호출하여
+      // 그려진 선의 총거리 정보와 거리에 대한 도보, 자전거 시간을 계산하여
+      // HTML Content를 만들어 리턴하는 함수입니다
+      function getTimeHTML(distance) {
+        // 도보의 시속은 평균 4km/h 이고 도보의 분속은 67m/min입니다
+        var walkkTime = (distance / 67) | 0;
+        var walkHour = '',
+          walkMin = '';
+
+        // 계산한 도보 시간이 60분 보다 크면 시간으로 표시합니다
+        if (walkkTime > 60) {
+          walkHour =
+            '<span class="number">' +
+            Math.floor(walkkTime / 60) +
+            '</span>시간 ';
+        }
+        walkMin = '<span class="number">' + (walkkTime % 60) + '</span>분';
+
+        // 자전거의 평균 시속은 16km/h 이고 이것을 기준으로 자전거의 분속은 267m/min입니다
+        var bycicleTime = (distance / 227) | 0;
+        var bycicleHour = '',
+          bycicleMin = '';
+
+        // 계산한 자전거 시간이 60분 보다 크면 시간으로 표출합니다
+        if (bycicleTime > 60) {
+          bycicleHour =
+            '<span class="number">' +
+            Math.floor(bycicleTime / 60) +
+            '</span>시간 ';
+        }
+        bycicleMin = '<span class="number">' + (bycicleTime % 60) + '</span>분';
+
+        // 거리와 도보 시간, 자전거 시간을 가지고 HTML Content를 만들어 리턴합니다
+        var content = '<ul class="dotOverlay distanceInfo">';
+        content += '    <li>';
+        content +=
+          '        <span class="label">총거리</span><span class="number">' +
+          distance +
+          '</span>m';
+        content += '    </li>';
+        content += '    <li>';
+        content +=
+          '        <span class="label">도보</span>' + walkHour + walkMin;
+        content += '    </li>';
+        content += '    <li>';
+        content +=
+          '        <span class="label">자전거</span>' +
+          bycicleHour +
+          bycicleMin;
+        content += '    </li>';
+        content += '</ul>';
+
+        return content;
+      }
+
+      // ------------------------------------------------------------------------------------------------------
+      function findAptLoc(aptNa) {
+        // 기존 마크제거하기
+        removeMarker2();
+
+        console.log(aptNa + ' 아파트 위치 렌더링!!!' + aptInfo.toString());
+        // 마커 이미지의 이미지 주소입니다
+        // var imageSrc2 =
+        //   'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png';
+
+        // 반복문 돌면서 마커 맵에 그리기
+        for (let i = 0; i < aptInfo.length; i++) {
+          // 마커 이미지의 이미지 크기 입니다
+          // var imageSize2 = new kakao.maps.Size(24, 35);
+
+          // 마커 이미지를 생성합니다
+          // var markerImage2 = new kakao.maps.MarkerImage(imageSrc2, imageSize2);
+          // console.log(aptNa);
+          // console.log(typeof aptInfo);
+
+          let tmpAptPrice = '11900';
+          for (let j = 0; j < aptDeal.length; j++) {
+            if (aptDeal[j].aptName == aptInfo[i].aptName) {
+              tmpAptPrice = aptDeal[j].price.trim();
+            }
+            console.log(aptDeal[j]);
+          }
+
+          let tmpApt = aptInfo[i].aptName;
+          if (tmpApt == aptNa) {
+            // 로브뷰에 쓰일 기준점
+            aptX = aptInfo[i].lat;
+            aptY = aptInfo[i].lng;
+
+            let makeLatLng = new kakao.maps.LatLng(
+              aptInfo[i].lat,
+              aptInfo[i].lng
+            );
+            marker2 = new kakao.maps.Marker({
+              map: map, // 마커를 표시할 지도
+              position: makeLatLng, // 마커를 표시할 위치
+              title: '아파트명: ' + tmpApt + '\n' + '가격: ' + tmpAptPrice, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
+              //image: markerImage2, // 마커 이미지
+            });
+            marker2.setMap(map);
+            console.log('찍혔다!! 아파트');
+            break;
+          }
+        }
+        makeLoadView();
+        console.log(aptX + ' ******************************* ' + aptY);
+      }
+
+      function removeMarker2() {
+        if (marker2 != null) {
+          marker2.setMap(null);
+        }
+      }
+
+      // 커스텀 오버레이의 컨텐츠 노드에 mousedown, touchstart 이벤트가 발생했을때
+      // 지도 객체에 이벤트가 전달되지 않도록 이벤트 핸들러로 kakao.maps.event.preventMap 메소드를 등록합니다
+      addEventHandle(contentNode, 'mousedown', kakao.maps.event.preventMap);
+      addEventHandle(contentNode, 'touchstart', kakao.maps.event.preventMap);
+
+      // 커스텀 오버레이 컨텐츠를 설정합니다
+      placeOverlay.setContent(contentNode);
+
+      // 각 카테고리에 클릭 이벤트를 등록합니다
+      addCategoryClickEvent();
+
+      // 엘리먼트에 이벤트 핸들러를 등록하는 함수입니다
+      function addEventHandle(target, type, callback) {
+        if (target.addEventListener) {
+          target.addEventListener(type, callback);
+        } else {
+          target.attachEvent('on' + type, callback);
+        }
+      }
+
+      // 카테고리 검색을 요청하는 함수입니다
+      function searchPlaces() {
+        if (!currCategory) {
+          return;
+        }
+
+        // 커스텀 오버레이를 숨깁니다
+        placeOverlay.setMap(null);
+
+        // 지도에 표시되고 있는 마커를 제거합니다
+        removeMarker();
+
+        ps.categorySearch(currCategory, placesSearchCB, { useMapBounds: true });
+      }
+
+      // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
+      function placesSearchCB(data, status, pagination) {
+        if (status === kakao.maps.services.Status.OK) {
+          // 정상적으로 검색이 완료됐으면 지도에 마커를 표출합니다
+          displayPlaces(data);
+        } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+          // 검색결과가 없는경우 해야할 처리가 있다면 이곳에 작성해 주세요
+        } else if (status === kakao.maps.services.Status.ERROR) {
+          // 에러로 인해 검색결과가 나오지 않은 경우 해야할 처리가 있다면 이곳에 작성해 주세요
+        }
+      }
+
+      // 지도에 마커를 표출하는 함수입니다
+      function displayPlaces(places) {
+        // 몇번째 카테고리가 선택되어 있는지 얻어옵니다
+        // 이 순서는 스프라이트 이미지에서의 위치를 계산하는데 사용됩니다
+        var order = document
+          .getElementById(currCategory)
+          .getAttribute('data-order');
+
+        for (var i = 0; i < places.length; i++) {
+          // 마커를 생성하고 지도에 표시합니다
+          var marker = addMarker(
+            new kakao.maps.LatLng(places[i].y, places[i].x),
+            order
+          );
+
+          // 마커와 검색결과 항목을 클릭 했을 때
+          // 장소정보를 표출하도록 클릭 이벤트를 등록합니다
+          (function(marker, place) {
+            kakao.maps.event.addListener(marker, 'click', function() {
+              displayPlaceInfo(place);
+            });
+          })(marker, places[i]);
+        }
+      }
+
+      // 마커를 생성하고 지도 위에 마커를 표시하는 함수입니다
+      function addMarker(position, order) {
+        var imageSrc =
+            'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_category.png', // 마커 이미지 url, 스프라이트 이미지를 씁니다
+          imageSize = new kakao.maps.Size(27, 28), // 마커 이미지의 크기
+          imgOptions = {
+            spriteSize: new kakao.maps.Size(72, 208), // 스프라이트 이미지의 크기
+            spriteOrigin: new kakao.maps.Point(46, order * 36), // 스프라이트 이미지 중 사용할 영역의 좌상단 좌표
+            offset: new kakao.maps.Point(11, 28), // 마커 좌표에 일치시킬 이미지 내에서의 좌표
+          },
+          markerImage = new kakao.maps.MarkerImage(
+            imageSrc,
+            imageSize,
+            imgOptions
+          ),
+          marker = new kakao.maps.Marker({
+            position: position, // 마커의 위치
+            image: markerImage,
+          });
+
+        marker.setMap(map); // 지도 위에 마커를 표출합니다
+        markers.push(marker); // 배열에 생성된 마커를 추가합니다
+
+        return marker;
+      }
+
+      // 지도 위에 표시되고 있는 마커를 모두 제거합니다
+      function removeMarker() {
+        for (var i = 0; i < markers.length; i++) {
+          markers[i].setMap(null);
+        }
+        markers = [];
+      }
+
+      // 클릭한 마커에 대한 장소 상세정보를 커스텀 오버레이로 표시하는 함수입니다
+      function displayPlaceInfo(place) {
+        var content =
+          '<div class="placeinfo">' +
+          '   <a class="title" href="' +
+          place.place_url +
+          '" target="_blank" title="' +
+          place.place_name +
+          '">' +
+          place.place_name +
+          '</a>';
+
+        if (place.road_address_name) {
+          content +=
+            '    <span title="' +
+            place.road_address_name +
+            '">' +
+            place.road_address_name +
+            '</span>' +
+            '  <span class="jibun" title="' +
+            place.address_name +
+            '">(지번 : ' +
+            place.address_name +
+            ')</span>';
+        } else {
+          content +=
+            '    <span title="' +
+            place.address_name +
+            '">' +
+            place.address_name +
+            '</span>';
+        }
+
+        content +=
+          '    <span class="tel">' +
+          place.phone +
+          '</span>' +
+          '</div>' +
+          '<div class="after"></div>';
+
+        contentNode.innerHTML = content;
+        placeOverlay.setPosition(new kakao.maps.LatLng(place.y, place.x));
+        placeOverlay.setMap(map);
+      }
+
+      // 각 카테고리에 클릭 이벤트를 등록합니다
+      function addCategoryClickEvent() {
+        var category = document.getElementById('category'),
+          children = category.children;
+
+        for (var i = 0; i < children.length; i++) {
+          children[i].onclick = onClickCategory;
+        }
+      }
+
+      // 카테고리를 클릭했을 때 호출되는 함수입니다
+      function onClickCategory() {
+        var id = this.id,
+          className = this.className;
+
+        placeOverlay.setMap(null);
+
+        if (className === 'on') {
+          currCategory = '';
+          changeCategoryClass();
+          removeMarker();
+        } else {
+          currCategory = id;
+          changeCategoryClass(this);
+          searchPlaces();
+        }
+      }
+
+      // 클릭된 카테고리에만 클릭된 스타일을 적용하는 함수입니다
+      function changeCategoryClass(el) {
+        var category = document.getElementById('category'),
+          children = category.children,
+          i;
+
+        for (i = 0; i < children.length; i++) {
+          children[i].className = '';
+        }
+
+        if (el) {
+          el.className = 'on';
+        }
+      }
+
+      function makeLoadView() {
+        console.log(aptX + ' !!!!' + aptY);
+        var mapWrapper2 = document.getElementById('mapWrapper2'); //지도를 감싸고 있는 DIV태그
+        var mapContainer2 = document.getElementById('map2'), // 지도를 표시할 div
+          mapCenter2 = new kakao.maps.LatLng(aptX, aptY), // 지도의 가운데 좌표
+          mapOption2 = {
+            center: mapCenter2, // 지도의 중심좌표
+            level: 3, // 지도의 확대 레벨
+          };
+
+        // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
+        var map2 = new kakao.maps.Map(mapContainer2, mapOption2);
+        map2.addOverlayMapTypeId(kakao.maps.MapTypeId.ROADVIEW); //지도 위에 로드뷰 도로 올리기
+
+        var rvContainer = document.getElementById('roadview'); //로드뷰를 표시할 div
+        var rv = new kakao.maps.Roadview(rvContainer); //로드뷰 객체
+        var rvClient = new kakao.maps.RoadviewClient(); //좌표로부터 로드뷰 파노ID를 가져올 로드뷰 helper객체
+
+        //toggleRoadview(mapCenter2);
+        toggleRoadview(
+          mapCenter2,
+          rvClient,
+          rvContainer,
+          mapWrapper2,
+          map2,
+          rv
+        );
+
+        // 마커 이미지를 생성합니다.
+        var markImage2 = new kakao.maps.MarkerImage(
+          'https://t1.daumcdn.net/localimg/localimages/07/2018/pc/roadview_minimap_wk_2018.png',
+          new kakao.maps.Size(26, 46),
+          {
+            // 스프라이트 이미지를 사용합니다.
+            // 스프라이트 이미지 전체의 크기를 지정하고
+            spriteSize: new kakao.maps.Size(1666, 168),
+            // 사용하고 싶은 영역의 좌상단 좌표를 입력합니다.
+            // background-position으로 지정하는 값이며 부호는 반대입니다.
+            spriteOrigin: new kakao.maps.Point(705, 114),
+            offset: new kakao.maps.Point(70, 40), // 나중에 화면상 절대적위치를 입력해야 함!!!!!!!!!!!!!!!!!!!!!!!!!!!
+          }
+        );
+
+        // 드래그가 가능한 마커를 생성합니다.
+        var rvMarker2 = new kakao.maps.Marker({
+          image: markImage2,
+          position: mapCenter2,
+          draggable: true,
+          map2: map2,
+        });
+
+        //마커에 dragend 이벤트를 할당합니다
+        kakao.maps.event.addListener(rvMarker2, 'dragend', function(
+          mouseEvent
+        ) {
+          var position2 = rvMarker2.getPosition(); //현재 마커가 놓인 자리의 좌표
+          toggleRoadview(position2); //로드뷰를 토글합니다
+        });
+
+        //지도에 클릭 이벤트를 할당합니다
+        kakao.maps.event.addListener(map2, 'click', function(mouseEvent) {
+          // 현재 클릭한 부분의 좌표를 리턴
+          var position2 = mouseEvent.latLng;
+
+          rvMarker2.setPosition(position2);
+          toggleRoadview(position2); //로드뷰를 토글합니다
+        });
+      }
+
+      //로드뷰 toggle함수
+      function toggleRoadview(
+        position,
+        rvClient,
+        rvContainer,
+        mapWrapper2,
+        map2,
+        rv
+      ) {
+        //전달받은 좌표(position)에 가까운 로드뷰의 panoId를 추출하여 로드뷰를 띄웁니다
+        rvClient.getNearestPanoId(position, 50, function(panoId) {
+          if (panoId === null) {
+            rvContainer.style.display = 'none'; //로드뷰를 넣은 컨테이너를 숨깁니다
+            mapWrapper2.style.width = '100%';
+            map2.relayout();
+          } else {
+            mapWrapper2.style.width = '50%';
+            map2.relayout(); //지도를 감싸고 있는 영역이 변경됨에 따라, 지도를 재배열합니다
+            rvContainer.style.display = 'block'; //로드뷰를 넣은 컨테이너를 보이게합니다
+            rv.setPanoId(panoId, position); //panoId를 통한 로드뷰 실행
+            rv.relayout(); //로드뷰를 감싸고 있는 영역이 변경됨에 따라, 로드뷰를 재배열합니다
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

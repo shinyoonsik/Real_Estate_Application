@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.happyhouse.model.dao.HouseMapMapper">
+
+	<resultMap type="SidoGugunCodeDto" id="SidoCodeList">
+		<result property="sidoCode" column="sido_code"/>
+		<result property="sidoName" column="sido_name"/>
+	</resultMap>
+	
+	<select id="getSido" resultMap="SidoCodeList">
+		select left(sido_code,2) sido_code, sido_name FROM sidocode	
+		order by sido_code
+	</select>
+	
+	<resultMap type="SidoGugunCodeDto" id="GugunCodeList">
+		<result property="gugunCode" column="gugun_code"/>
+		<result property="gugunName" column="gugun_name"/>
+	</resultMap>
+	
+	<select id="getGugunInSido" parameterType="string" resultMap="GugunCodeList">
+		SELECT left(gugun_code,5) gugun_code, gugun_name FROM guguncode
+		where left(gugun_code,2) = #{sido}
+		ORDER BY gugun_code
+	</select>
+	
+	<resultMap type="HouseInfoDto" id="HouseInfoList">
+		<result property="no" column="no"/>
+		<result property="dong" column="dong"/>
+		<result property="aptName" column="aptName"/>
+		<result property="code" column="code"/>
+		<result property="lat" column="lat"/>
+		<result property="lng" column="lng"/>
+		<result property="jibun" column="jibun"/>
+		<result property="price" column="dealAmount"/>
+	</resultMap>
+	
+	<select id="getDongInGugun" parameterType="string" resultMap="HouseInfoList">
+		SELECT distinct dong, code FROM houseinfo
+		where code = #{gugun}
+		ORDER BY dong
+	</select>
+	
+	<select id="getAptInDong" parameterType="string" resultMap="HouseInfoList">
+		SELECT no,dong,AptName,code,jibun,lat,lng FROM houseinfo WHERE dong = #{dong}
+		ORDER BY AptName
+	</select>
+	
+	<!-- dong으로 getAptPrice가져오기 ; 추가된 부분 -->
+	<select id="getAptPriceByDong" parameterType="String" resultMap="HouseInfoList">
+		SELECT no,dong,AptName,dealAmount,code,jibun FROM housedeal where dong = #{dong}
+		order by dealAmount desc
+		limit 10
+	</select>
+	
+	<select id="getAptPrice" parameterType="int" resultMap="HouseInfoList">
+		SELECT no,dong,AptName,dealAmount,code,jibun FROM housedeal where cast(replace( trim(dealAmount), ',' , '') as UNSIGNED) &lt; #{price}
+		order by dealAmount desc
+	</select>
+	
+	<select id="getClinic" parameterType="string" resultType="ClinicDto">
+		SELECT possibility,sido_name,gugun_name,medical_name,addr,weekday,phone FROM coronaclinic WHERE sido_name=#{sido}
+		limit 10
+	</select>
+	
+	<select id="getRentPrice" parameterType="int" resultMap="HouseInfoList">
+		SELECT no,dong,AptName,dealAmount,code,jibun FROM housedeal where cast(replace( trim(dealAmount), ',' , '') as UNSIGNED) &lt; #{price}
+		order by dealAmount desc
+	</select>
+	
+	<select id="getHousePrice" parameterType="int" resultType="villaDto">
+		SELECT no,dong,AptName,dealAmount, buildYear, address, rentMoney FROM house where cast(replace( trim(dealAmount), ',' , '') as UNSIGNED) &lt; #{price}
+		order by dealAmount desc
+	</select>
+	
+	<select id="getHouseRentPrice" parameterType="int" resultType="villaDto">
+		SELECT no,dong,AptName,dealAmount, buildYear, address, rentMoney FROM house where cast(replace( trim(dealAmount), ',' , '') as UNSIGNED) &lt; #{price}
+		order by dealAmount desc
+	</select>
+	
+	
+	
+</mapper>

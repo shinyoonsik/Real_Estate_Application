@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.happyhouse.model.dao.MemberDao">
+  
+  <insert id="memberInsert">
+    insert into member (id,pw,name,email,birth,phone, interestLocation) values (#{id},#{pw},#{name},#{email},#{birth},#{phone},#{interestLocation})
+  </insert>
+  <select id="search" resultType="MemberDto">
+    select id,pw,name,email,birth,phone,interestLocation 
+    from member 
+    where id=yyy
+  </select>
+  <update id="memberUpdate" >
+    update member 
+    set pw=#{pw}, name=#{name}, email=#{email}, birth=#{birth}, phone=#{phone}, interestLocation=#{interestLocation} 
+    where id=#{id}
+  </update>
+  
+  <delete id="memberDelete">
+    delete from member where id=#{id}
+  </delete>
+  
+</mapper>
