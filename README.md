@@ -1,2 +1,4 @@
 # Real_Estate_Application
-for showing my project
+- 아키텍처
+  - front: Vue.js
+  - back: SpringBoot
