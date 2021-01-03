@@ -1,7 +1,7 @@
 # Real_Estate_Application
 - 아키텍처
   - front: Vue.js
-  - back:SpringBoot
+  - back: SpringBoot
   
 - 기능구현
   - 로그인, 회원가입
